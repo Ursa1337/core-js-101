@@ -386,7 +386,17 @@ function toNaryString(num, n) {
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
 function getCommonDirectoryPath(pathes) {
-  throw new Error('Not implemented');
+  return pathes.reduce((a, b) => {
+    let result = '';
+    b.split('').every((char, index) => {
+      if (char === a[index]) {
+        result += char;
+        return true;
+      }
+      return false;
+    });
+    return result.replace(/\/(?:.(?!\/))+$/gm, '/');
+  });
 }
 
 
@@ -408,8 +418,8 @@ function getCommonDirectoryPath(pathes) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  return m1.map((v) => m1.map((_, ij) => v.reduce((a, b, ii) => a + b * m2[ii][ij], 0)));
 }
 
 
@@ -443,8 +453,25 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  const positionWin = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6],
+  ];
+  let positionFlat = position.map((v) => {
+    if (v.length === 3) {
+      return v;
+    }
+    const addCount = Math.abs(v.length - 3);
+    return v.concat(Array(addCount).fill(undefined));
+  }).flat();
+  positionFlat = positionWin.map((wa) => wa.map((wp) => positionFlat[wp]).join(''));
+  if (positionFlat.includes('XXX')) {
+    return 'X';
+  }
+  if (positionFlat.includes('000')) {
+    return '0';
+  }
+  return undefined;
 }
 
 
